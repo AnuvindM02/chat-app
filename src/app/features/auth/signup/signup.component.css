@@ -1,0 +1,118 @@
+.signup-form {
+    display: grid;
+    grid-template-rows: auto auto auto auto auto auto auto;
+    gap: 1rem;
+    justify-items: center;
+    align-content: center;
+    height: 100%;
+    width: 100%;
+    background-color: #1e1e1e;
+}
+
+.signup-form h1 {
+    margin-bottom: 0;
+    color: #ffffff;
+}
+
+.name-section {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 1rem;
+    width: 75%;
+    align-items: center;
+    justify-items: center;
+}
+
+.signup-form input {
+    width: 70%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #444;
+    border-radius: 4px;
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+}
+
+.signup-form input::placeholder {
+    color: #888;
+}
+
+.signup-form button {
+    width: 75%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.signup-form button:hover {
+    background-color: #357ab8;
+}
+
+.signup-form a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.signup-form a:hover {
+    text-decoration: underline;
+}
+
+.form-control {
+    width: 75%;
+    display: grid;
+    grid-template-rows: auto auto;
+    justify-items: start;
+    align-content: center;
+}
+
+.name-section .form-control {
+    width: 75%;
+    display: grid;
+    grid-template-rows: auto auto;
+    justify-items: start;
+    align-content: center;
+}
+
+.name-section div:nth-of-type(1) {
+    justify-self: start;
+    justify-items: start;
+}
+
+.name-section div:nth-of-type(2) {
+    justify-self: center;
+    justify-items: center;
+}
+
+.name-section div:nth-of-type(3) {
+    justify-self: end;
+    justify-items: end;
+}
+
+.error-text {
+    color: #ff4d4f;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    text-align: center;
+    min-height: 1em;
+    /* Reserve height */
+    visibility: hidden;
+    /* Hide but take up space */
+}
+
+.form-control .error-text.visible {
+    visibility: visible;
+    /* Show when needed */
+}
+
+.invalidInput {
+    border: 1px solid #ff4d4f !important;
+}
+
+.signup-form .form-control input{
+    width: 94%;
+}

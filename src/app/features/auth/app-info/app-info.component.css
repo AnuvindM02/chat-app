@@ -1,0 +1,11 @@
+.app-info {
+    display: grid;
+    place-items: center;
+    /* Centers both horizontally + vertically */
+   /* Darker background for the app info */
+   background-image: linear-gradient(to right,#171b28, #1e1e1e);
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ffffff; /* White text for better visibility */
+    height: 100%;
+  }

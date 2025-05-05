@@ -1,0 +1,37 @@
+<form [formGroup]="signupForm" (ngSubmit)="onsubmit()" class="signup-form">
+    <h1>Sign up</h1>
+
+    <div class="name-section">
+        <div class="form-control">
+            <input type="text" placeholder="First Name" [class.invalidInput]="firstnameIsRequired"
+                (keydown)="blockNonLetters($event)" formControlName="firstName">
+            <span class="error-text" [class.visible]="firstnameIsRequired">Required</span>
+        </div>
+        <div class="form-control">
+            <input type="text" placeholder="Middle Name" (keydown)="blockNonLetters($event)">
+            <span class="error-text">Required</span>
+        </div>
+        <div class="form-control">
+            <input type="text" placeholder="Last Name" (keydown)="blockNonLetters($event)">
+            <span class="error-text">Required</span>
+        </div>
+    </div>
+
+    <div class="form-control">
+        <input type="text" placeholder="Email" formControlName="email" [class.invalidInput]="emailIsInvalid">
+        <span class="error-text" [class.visible]="emailIsInvalid">{{emailErrorMessage}}</span>
+    </div>
+    <div class="form-control">
+        <input type="password" placeholder="Password" formControlName="password"
+            [class.invalidInput]="passwordIsInvalid">
+        <span class="error-text" [class.visible]="passwordIsInvalid">{{passwordErrorMessage}}</span>
+    </div>
+    <div class="form-control">
+        <input type="password" placeholder="Confirm Password" formControlName="confirmPassword"
+            [class.invalidInput]="confirmPasswordIsInvalid">
+        <span class="error-text" [class.visible]="confirmPasswordIsInvalid">{{confirmPasswordErrorMessage}}</span>
+    </div>
+
+    <button type="submit">Create</button>
+    <a routerLink="">Already have an account?</a>
+</form>
