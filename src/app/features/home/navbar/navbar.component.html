@@ -1,0 +1,22 @@
+<div class="nav-container">
+    <div class="nav-bar">
+        <button class="nav-link" (mouseenter)="hovered = 'userRoundSearch'" (mouseleave)="hovered = ''" (click)="navigate('search')">
+            <lucide-icon [img]="userRoundSearch"
+                [color]="hovered === 'userRoundSearch'?'#2139ff':'black'"></lucide-icon>
+        </button>
+        <button class="nav-link" (mouseenter)="hovered = 'messageCircle'" (mouseleave)="hovered = ''" (click)="navigate('messages')">
+            <lucide-icon [img]="messageCircle" color="white"
+                [color]="hovered === 'messageCircle'?'#2139ff':'black'"></lucide-icon>
+        </button>
+        <button class="nav-link" (mouseenter)="hovered = 'user'" (mouseleave)="hovered = ''" (click)="navigate('profile')">
+            <lucide-icon [img]="user" color="white" [color]="hovered === 'user'?'#2139ff':'black'"></lucide-icon>
+        </button>
+        <button class="nav-link" (mouseenter)="hovered = 'bell'" (mouseleave)="hovered = ''" (click)="navigate('notifications')">
+            <lucide-icon [img]="bell" color="white" [color]="hovered === 'bell'?'#2139ff':'black'"></lucide-icon>
+        </button>
+        <button class="nav-link" (mouseenter)="hovered = 'settings'" (mouseleave)="hovered = ''" (click)="navigate('settings')">
+            <lucide-icon [img]="settings" color="white"
+                [color]="hovered === 'settings'?'#2139ff':'black'"></lucide-icon>
+        </button>
+    </div>
+</div>

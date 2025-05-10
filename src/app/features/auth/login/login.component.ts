@@ -43,7 +43,7 @@ export class LoginComponent {
       next: (response: LoginResponse) => {
         console.log(response);
         this.authService.setAuthStatus(response);
-        this.router.navigate(['/home']);
+        this.router.navigate(['../home']);
       },
       error: (error) => {
         console.error(error);
