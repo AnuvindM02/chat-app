@@ -1,0 +1,20 @@
+.contacts-card-container {
+    display: grid;
+    grid-template-columns: 1fr 6fr;
+    justify-items: center;
+    align-items: center;
+    color: white;
+    border-radius: 10px;
+    box-shadow:
+        0 0px 0px black, 0 1px 5px black;
+    background-color: #222831;
+    height: 3.5rem;
+}
+.user-info{
+    grid-row: auto auto;
+    justify-self: start;
+    
+}
+.email-field{
+    color: gray;
+}
