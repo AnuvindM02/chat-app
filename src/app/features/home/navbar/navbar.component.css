@@ -3,19 +3,19 @@
     display: grid;
     align-items: center;
     justify-items: center;
-    background-color: #213957;
+    background-color: #1e1e1e;
 }
 
 .nav-bar {
     display: grid;
-    height: 30%;
+    height: 35%;
     justify-items: center;
     align-items: center;
-    background-color: white;
+    background-color: #222831;
     width: 80%;
     border-radius: 20px;
     box-shadow:
-    0 0px 0px black, 0 1px 7px black;
+    0 0px 0px black, 0 1px 5px black;
 }
 
 .nav-link {
@@ -23,4 +23,17 @@
     background: none;
     border: none;
     outline: none;
+}
+
+.nav-link lucide-icon {
+  color: white;
+  transition: color 0.3s;
+}
+
+.nav-link:hover lucide-icon {
+  color: #2139ff;
+}
+
+.nav-link.active-link lucide-icon {
+  color: #2139ff;
 }
