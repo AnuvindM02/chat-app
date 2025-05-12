@@ -1,11 +1,13 @@
 <div class="contacts-section-container">
   <div class="user-search-box">
     <div class="input-wrapper">
-      <input type="text" placeholder="Search for users" />
+      <input type="text" placeholder="Search contacts" />
       <lucide-icon [img]="search" class="search-icon"></lucide-icon>
     </div>
   </div>
   <div class="contacts-list">
-    <app-contact-card />
+    @for (user of users; track user.email) {
+    <app-contact-card [name]="user.name" [email]="user.email" />
+    }
   </div>
 </div>

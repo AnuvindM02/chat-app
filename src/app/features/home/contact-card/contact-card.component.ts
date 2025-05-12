@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { LucideAngularModule, CircleUserRound } from 'lucide-angular';
 
 @Component({
@@ -9,4 +9,6 @@ import { LucideAngularModule, CircleUserRound } from 'lucide-angular';
 })
 export class ContactCardComponent {
   readonly circleUserRound = CircleUserRound;
+  name = input.required<string>();
+  email = input.required<string>();
 }

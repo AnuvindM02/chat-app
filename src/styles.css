@@ -8,3 +8,8 @@ html, body{
 *{
     outline: none;
 }
+
+app-root{
+    display: block;
+    height: 100%;
+}
