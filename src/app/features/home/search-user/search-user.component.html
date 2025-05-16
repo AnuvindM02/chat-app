@@ -1,13 +1,24 @@
-<div class="contacts-section-container">
-  <div class="user-search-box">
-    <div class="input-wrapper">
-      <input type="text" placeholder="Search for users" [value]="searchTerm()" (input)="onSearchChange($event)"/>
-      <lucide-icon [img]="search" class="search-icon"></lucide-icon>
+<div class="search-user-container">
+  <div class="contacts-section-container">
+    <div class="user-search-box">
+      <div class="input-wrapper">
+        <input type="text" placeholder="Search for users" [value]="searchTerm()" (input)="onSearchChange($event)" />
+        <lucide-icon [img]="search" class="search-icon"></lucide-icon>
+      </div>
+    </div>
+    <div class="contacts-list" (scroll)="onScroll($event)">
+      @for (user of users(); track user.email) {
+      <app-contact-card [name]="user.firstName" [email]="user.email" (selected)="onUserSelected(user)" />
+      }
     </div>
   </div>
-  <div class="contacts-list" (scroll)="onScroll($event)">
-    @for (user of users(); track user.email) {
-    <app-contact-card [name]="user.firstName" [email]="user.email" />
+  <div class="user-profile">
+    @if (selectedUser()) {
+    <app-user-profile
+      [name]="(selectedUser()?.firstName || '') + (selectedUser()?.middleName || '') + (selectedUser()?.lastName || '')"
+      [email]="selectedUser()?.email || ''"
+      [joinedDate]="selectedUser()?.createdAt">
+    </app-user-profile>
     }
   </div>
 </div>
