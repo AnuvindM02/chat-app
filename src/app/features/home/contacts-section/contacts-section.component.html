@@ -1,13 +1,13 @@
 <div class="contacts-section-container">
   <div class="user-search-box">
     <div class="input-wrapper">
-      <input type="text" placeholder="Search contacts" />
+      <input type="text" placeholder="Search contacts" [value]="searchTerm()" (input)="onSearchChange($event)"/>
       <lucide-icon [img]="search" class="search-icon"></lucide-icon>
     </div>
   </div>
-  <div class="contacts-list">
-    @for (user of users; track user.email) {
-    <app-contact-card [name]="user.name" [email]="user.email" />
+  <div class="contacts-list" (scroll)="onScroll($event)">
+    @for (user of users(); track user.email) {
+    <app-contact-card [name]="user.firstName" [email]="user.email" />
     }
   </div>
 </div>

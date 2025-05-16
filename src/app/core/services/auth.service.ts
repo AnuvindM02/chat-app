@@ -1,10 +1,12 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { LoginRequest } from '../../models/auth/login-request';
 import { LoginResponse } from '../../models/auth/login-response';
 import { Observable } from 'rxjs';
 import { RegisterRequest } from '../../models/auth/register-request';
+import { GetUsersRequest } from '../../models/auth/get-users-request';
+import { GetUsersResponse } from '../../models/auth/get-users-response';
 
 @Injectable({
   providedIn: 'root'
@@ -42,4 +44,15 @@ export class AuthService {
     //localStorage.removeItem('refresh_token');
     localStorage.removeItem('user_id');
   }
+
+  getAllUsers(data:GetUsersRequest): Observable<GetUsersResponse>{
+    let params = new HttpParams();
+    Object.keys(data).forEach(key => {
+    const typedKey = key as keyof GetUsersRequest;
+    if (data[typedKey] !== undefined && data[typedKey] !== null) {
+      params = params.set(key, data[typedKey] as string);
+    }
+  });
+    return this.http.get<GetUsersResponse>(`${this.authApiBaseUrl}/users/getAll`, { params });
+  } 
 }
