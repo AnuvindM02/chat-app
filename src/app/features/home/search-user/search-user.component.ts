@@ -6,17 +6,24 @@ import { AuthService } from '../../../core/services/auth.service';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs';
 import { GetUsersRequest } from '../../../models/auth/get-users-request';
+import { UserProfileComponent } from "../user-profile/user-profile.component";
 
 @Component({
   selector: 'app-search-user',
-  imports: [LucideAngularModule, ContactCardComponent],
+  imports: [LucideAngularModule, ContactCardComponent, UserProfileComponent],
   templateUrl: './search-user.component.html',
   styleUrl: './search-user.component.css'
 })
 export class SearchUserComponent {
+
+  selectedUser = signal<UserDto | null>(null);
+
+  onUserSelected(user: UserDto) {
+    this.selectedUser.set(user);
+  }
   readonly search = Search;
-  
-    searchTerm = signal('');
+
+  searchTerm = signal('');
   private pageSize = 15;
   private cursor = signal<Date | null>(null);
   readonly users = signal<UserDto[]>([]);
