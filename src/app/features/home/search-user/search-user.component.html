@@ -15,7 +15,7 @@
   <div class="user-profile">
     @if (selectedUser()) {
     <app-user-profile
-      [name]="(selectedUser()?.firstName || '') + (selectedUser()?.middleName || '') + (selectedUser()?.lastName || '')"
+      [name]="(selectedUser()?.firstName || '') + (' '+selectedUser()?.middleName || '') + (' '+selectedUser()?.lastName || '')"
       [email]="selectedUser()?.email || ''"
       [joinedDate]="selectedUser()?.createdAt">
     </app-user-profile>
