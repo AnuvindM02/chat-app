@@ -6,10 +6,11 @@ import { GetUsersRequest } from '../../../models/auth/get-users-request';
 import { tap, debounceTime, distinctUntilChanged } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { UserDto } from '../../../models/auth/user-dto';
+import { ChatWindowComponent } from "../chat-window/chat-window.component";
 
 @Component({
   selector: 'app-contacts-section',
-  imports: [LucideAngularModule, ContactCardComponent],
+  imports: [LucideAngularModule, ContactCardComponent, ChatWindowComponent],
   templateUrl: './contacts-section.component.html',
   styleUrl: './contacts-section.component.css'
 })
