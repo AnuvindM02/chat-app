@@ -17,7 +17,8 @@
     <app-user-profile
       [name]="(selectedUser()?.firstName || '') + (' '+selectedUser()?.middleName || '') + (' '+selectedUser()?.lastName || '')"
       [email]="selectedUser()?.email || ''"
-      [joinedDate]="selectedUser()?.createdAt">
+      [joinedDate]="selectedUser()?.createdAt"
+      [userId]="selectedUser()?.userId">
     </app-user-profile>
     }
   </div>

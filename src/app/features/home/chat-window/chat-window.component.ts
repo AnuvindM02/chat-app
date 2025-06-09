@@ -1,6 +1,7 @@
 import { NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, input, Input, OnDestroy, OnInit } from '@angular/core';
 import { CircleUserRound, LucideAngularModule } from 'lucide-angular';
+import { ChatService } from '../../../core/services/chat.service';
 
 @Component({
   selector: 'app-chat-window',
@@ -8,7 +9,26 @@ import { CircleUserRound, LucideAngularModule } from 'lucide-angular';
   templateUrl: './chat-window.component.html',
   styleUrl: './chat-window.component.css'
 })
-export class ChatWindowComponent {
+export class ChatWindowComponent implements OnInit, OnDestroy {
+
+  conversationId = input.required<string | null>();
+  recepientName = input.required<string | null>();
+  readonly chatService: ChatService;
+  readonly token: string = localStorage.getItem('access_token') || '';
+
+  public constructor(chatService: ChatService){
+    this.chatService = chatService;
+  }
+
+  ngOnDestroy(): void {
+    this.chatService.startConnection(this.token);
+    //this.chatService.joinConversation(this.convers); // Assuming '1' is the conversation ID
+  }
+  ngOnInit(): void {
+    throw new Error('Method not implemented.');
+  }
+
+  
   readonly circleUserRound = CircleUserRound;
   userId = 1;
   messages = [
