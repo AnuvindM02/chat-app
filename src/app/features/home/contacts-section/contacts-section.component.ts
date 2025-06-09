@@ -5,8 +5,9 @@ import { AuthService } from '../../../core/services/auth.service';
 import { GetUsersRequest } from '../../../models/auth/get-users-request';
 import { tap, debounceTime, distinctUntilChanged } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { UserDto } from '../../../models/auth/user-dto';
 import { ChatWindowComponent } from "../chat-window/chat-window.component";
+import { ChatService } from '../../../core/services/chat.service';
+import { ContactDto } from '../../../models/chat/contact-dto';
 
 @Component({
   selector: 'app-contacts-section',
@@ -16,14 +17,21 @@ import { ChatWindowComponent } from "../chat-window/chat-window.component";
 })
 export class ContactsSectionComponent {
   readonly search = Search;
+  selectedUserId = signal<string | null>(null);
+  receipmentName = signal<string | null>(null);
+
+  onUserSelected(data:{conversationId: string, email: string; name: string;}) {
+    this.selectedUserId.set(data.conversationId);
+    this.receipmentName.set(data.name);
+  }
 
   searchTerm = signal('');
   private pageSize = 15;
   private cursor = signal<Date | null>(null);
-  readonly users = signal<UserDto[]>([]);
+  readonly users = signal<ContactDto[]>([]);
   readonly isLoading = signal(false);
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private chatService: ChatService) {
     toObservable(this.searchTerm)
       .pipe(
         debounceTime(300),
@@ -51,7 +59,7 @@ export class ContactsSectionComponent {
       search: this.searchTerm()
     }
 
-    this.authService.getAllUsers(getUsersRequest).pipe(
+    this.chatService.getAllContacts(getUsersRequest).pipe(
       tap(response => {
         this.cursor.set(new Date(response.nextCursor ? response.nextCursor : ''));
         this.users.update(users => [...users, ...response.users]);

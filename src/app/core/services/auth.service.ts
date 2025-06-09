@@ -12,7 +12,7 @@ import { GetUsersResponse } from '../../models/auth/get-users-response';
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly authApiBaseUrl = environment.authApiBaseUrl;
+  private readonly authApiBaseUrl = environment.baseUrl;
   public isAuthenticated: boolean = false;
   public userId: number | null = null;
   public currentUserName: string | null = null;
@@ -54,5 +54,5 @@ export class AuthService {
     }
   });
     return this.http.get<GetUsersResponse>(`${this.authApiBaseUrl}/users/getAll`, { params });
-  } 
+  }
 }

@@ -8,11 +8,13 @@
     </div>
     <div class="contacts-list" (scroll)="onScroll($event)">
       @for (user of users(); track user.email) {
-      <app-contact-card [name]="user.firstName" [email]="user.email" />
+      <app-contact-card [name]="user.firstName" [email]="user.email" (selected)="onUserSelected({conversationId: user.conversationId,
+        email: user.email, name: user.firstName
+       })"/>
       }
     </div>
   </div>
   <div class="chat-section">
-    <app-chat-window></app-chat-window>
+    <app-chat-window [conversationId]="selectedUserId()" [recepientName]="receipmentName()"></app-chat-window>
   </div>
 </div>
