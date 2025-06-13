@@ -69,3 +69,12 @@
 .contacts-list app-contact-card {
     width: 90%;
 }
+
+.no-chat-selected {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    color: #888;
+}

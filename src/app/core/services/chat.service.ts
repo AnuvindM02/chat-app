@@ -23,22 +23,26 @@ export class ChatService {
     return this.http.post<string>(`${this.baseUrl}/chat/conversations/p2p`, data);
   }
 
-  getAllContacts(data:GetUsersRequest): Observable<ContactsListDto>{
-      let params = new HttpParams();
-      Object.keys(data).forEach(key => {
+  getAllContacts(data: GetUsersRequest): Observable<ContactsListDto> {
+    let params = new HttpParams();
+    Object.keys(data).forEach(key => {
       const typedKey = key as keyof GetUsersRequest;
       if (data[typedKey] !== undefined && data[typedKey] !== null) {
         params = params.set(key, data[typedKey] as string);
       }
     });
-      return this.http.get<ContactsListDto>(`${this.baseUrl}/chat/conversations`, { params });
-    } 
+    return this.http.get<ContactsListDto>(`${this.baseUrl}/chat/conversations`, { params });
+  }
+
+  getMessages(conversationId: string): Observable<ChatMessage[]> {
+    return this.http.get<ChatMessage[]>(`${this.baseUrl}/chat/conversations/${conversationId}/messages`);
+  }
 
   startConnection(token: string): void {
     if (this.hubConnection) return; //For avoiding duplicate connection
 
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl(`${environment}/chat-hub`, {
+      .withUrl(`http://localhost:7002/api/chat-hub`, {
         accessTokenFactory: () => token,
       })
       .withAutomaticReconnect()
@@ -50,9 +54,9 @@ export class ChatService {
         console.log('SignalR connection started'))
       .catch(err => console.error('SignalR connection error:', err));
 
-      this.hubConnection.on('ReceiveMessage', (message: ChatMessage) => {
-        this.messageSubject.next(message);
-      });
+    this.hubConnection.on('ReceiveMessage', (userId: string,message: ChatMessage) => {
+      this.messageSubject.next(message);
+    });
   }
 
   joinConversation(conversationId: string): void {
@@ -78,6 +82,7 @@ export class ChatService {
   }
 
   sendMessage(message: ChatMessage): void {
-    
+    console.log('Sending message:', message);
+    this.hubConnection?.invoke('SendPrivateMessage', message)
   }
 }

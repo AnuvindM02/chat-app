@@ -1,21 +1,29 @@
 <div class="chat-window-container">
     <div class="chat-header">
         <div class="user-icon">
-            <lucide-icon [img]="circleUserRound"></lucide-icon>
+            <lucide-icon [img]="circleUserRound" [size]="40"></lucide-icon>
         </div>
         <div class="user-name">
             <p>{{recepientName()}}</p>
         </div>
     </div>
     <div class="scrollable-chat-area">
-        @for (msg of messages; track $index) {
-        <div class="chat-message" [ngClass]="{ 'me': msg.userId === userId, 'other': msg.userId !== userId }">
-            <p>{{msg.content}}</p>
+        @if(!isLoading()){
+        @for (msg of messages(); track $index) {
+        <div class="chat-message" [ngClass]="{ 'me': msg.senderId === userId, 'other': msg.senderId !== userId }">
+            <p>{{msg.text}}</p>
         </div>
         }
+    }
+    @else {
+        <p>Loading messages...</p>
+    }
+        
     </div>
     <div class="message-input-container">
-        <input type="text" class="message-input" placeholder="Type your message here..." />
-        <button class="send-button">Send</button>
+        <input type="text" class="message-input" placeholder="Type your message here..." 
+        [value]="messageText()" (input)="messageText.set($any($event.target).value)"
+        (keydown.enter)="sendMessage()"/>
+        <button class="send-button" (click)="sendMessage()">Send</button>
     </div>
 </div>

@@ -21,6 +21,7 @@
     grid-template-columns: 15fr 2fr;
     align-items: center;
     gap: .5rem;
+    margin: 10px;
 }
 
 .message-input{
@@ -70,5 +71,9 @@
 .chat-message.other {
   justify-self: start;
   background-color: #444;
+}
+
+.user-name{
+    font-size: 1.5rem;
 }
 

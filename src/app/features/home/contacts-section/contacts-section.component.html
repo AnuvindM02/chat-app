@@ -9,12 +9,20 @@
     <div class="contacts-list" (scroll)="onScroll($event)">
       @for (user of users(); track user.email) {
       <app-contact-card [name]="user.firstName" [email]="user.email" (selected)="onUserSelected({conversationId: user.conversationId,
-        email: user.email, name: user.firstName
+        email: user.email, name: user.firstName, userId: user.userId
        })"/>
       }
     </div>
   </div>
-  <div class="chat-section">
-    <app-chat-window [conversationId]="selectedUserId()" [recepientName]="receipmentName()"></app-chat-window>
+ <div class="chat-section" *ngIf="selectedUserId() !== 0; else noChat">
+  <app-chat-window 
+    [conversationId]="conversationId()!" 
+    [recepientName]="recipientName()!">
+  </app-chat-window>
+</div>
+<ng-template #noChat>
+  <div class="no-chat-selected">
+    <p>Select a contact to start chatting</p>
   </div>
+</ng-template>
 </div>
