@@ -1,7 +1,9 @@
 import { NgClass } from '@angular/common';
-import { Component, input, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, input, OnDestroy, OnInit, signal } from '@angular/core';
 import { CircleUserRound, LucideAngularModule } from 'lucide-angular';
 import { ChatService } from '../../../core/services/chat.service';
+import { ChatMessage } from '../../../models/chat/chat-message';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat-window',
@@ -11,110 +13,75 @@ import { ChatService } from '../../../core/services/chat.service';
 })
 export class ChatWindowComponent implements OnInit, OnDestroy {
 
-  conversationId = input.required<string | null>();
-  recepientName = input.required<string | null>();
+  readonly messageText = signal('');
+  readonly circleUserRound = CircleUserRound;
+  userId = Number(localStorage.getItem('user_id') || '0');
+  conversationId = input.required<string>();
+  recepientName = input.required<string>();
+  readonly messages = signal<ChatMessage[]>([]);
+  private sub?: Subscription;
+  readonly isLoading = signal<boolean>(false);
+
   readonly chatService: ChatService;
   readonly token: string = localStorage.getItem('access_token') || '';
 
-  public constructor(chatService: ChatService){
+  public constructor(chatService: ChatService) {
     this.chatService = chatService;
+
+    effect(() => {
+      if (this.conversationId()) {
+        this.loadMessages(this.conversationId());
+      }
+    });
+  }
+
+  private loadMessages(conversationId: string) {
+    this.isLoading.set(true);
+    this.chatService.getMessages(conversationId).subscribe({
+      next: (msgs) => {
+        this.messages.set(msgs);
+        this.isLoading.set(false);
+        console.log('Messages loaded:', msgs);
+      },
+      error: () => {
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  sendMessage(){
+    const text = this.messageText().trim();
+    if(!text) return;
+
+    const message: ChatMessage = {
+      conversationId: this.conversationId(),
+      senderId: this.userId,
+      text: text,
+      timeStamp: new Date().toISOString(),
+      senderMailId:""
+    };
+
+    this.chatService.sendMessage(message);
+    this.messages.update((msgs) => [...msgs, message]);
+    this.messageText.set('');
   }
 
   ngOnDestroy(): void {
-    this.chatService.startConnection(this.token);
-    //this.chatService.joinConversation(this.convers); // Assuming '1' is the conversation ID
-  }
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.chatService.leaveConversation(this.conversationId());
+    this.sub?.unsubscribe();
   }
 
-  
-  readonly circleUserRound = CircleUserRound;
-  userId = 1;
-  messages = [
-    {
-      id: 1,
-      userId: 1,
-      content: 'Hello, how are you?',
-      timestamp: new Date('2023-10-01T10:00:00Z')
-    },
-    {
-      id: 2,
-      userId: 2,
-      content: 'I am fine, thank you! How about you?',
-      timestamp: new Date('2023-10-01T10:01:00Z')
-    },
-    {
-      id: 3,
-      userId: 1,
-      content: 'I am doing well, thanks for asking!',
-      timestamp: new Date('2023-10-01T10:02:00Z')
-    },
-    {
-      id: 4,
-      userId: 2,
-      content: 'Great to hear! Do you have any plans for the weekend?',
-      timestamp: new Date('2023-10-01T10:03:00Z')
-    },
-    {
-      id: 5,
-      userId: 1,
-      content: 'Yes, I am planning to go hiking. What about you?',
-      timestamp: new Date('2023-10-01T10:04:00Z')
-    },
-    {
-      id: 6,
-      userId: 2,
-      content: 'I might just relax at home and catch up on some reading.',
-      timestamp: new Date('2023-10-01T10:05:00Z')
-    },
-    {
-      id: 7,
-      userId: 1,
-      content: 'That sounds nice! Any book recommendations?',
-      timestamp: new Date('2023-10-01T10:06:00Z')
-    },
-    {
-      id: 8,
-      userId: 2,
-      content: 'I recently read "The Alchemist" by Paulo Coelho. It was fantastic!',
-      timestamp: new Date('2023-10-01T10:07:00Z')
-    },
-    {
-      id: 9,
-      userId: 1,
-      content: 'I love that book! I might read it again this weekend.',
-      timestamp: new Date('2023-10-01T10:08:00Z')
-    },
-    {
-      id: 10,
-      userId: 2,
-      content: 'You should! It’s a great read.',
-      timestamp: new Date('2023-10-01T10:09:00Z')
-    },
-    {
-      id: 11,
-      userId: 1,
-      content: 'Thanks for the recommendation! Let’s catch up later.',
-      timestamp: new Date('2023-10-01T10:10:00Z')
-    },
-    {
-      id: 12,
-      userId: 2,
-      content: 'Sure, have a great day❤️!',
-      timestamp: new Date('2023-10-01T10:11:00Z')
-    },
-    {
-      id: 13,
-      userId: 1,
-      content: 'You too! Bye!',
-      timestamp: new Date('2023-10-01T10:12:00Z')
-    },
-    {
-      id: 14,
-      userId: 2,
-      content: 'Bye!',
-      timestamp: new Date('2023-10-01T10:13:00Z')
-    }
-  ];
+  ngOnInit(): void {
+    this.chatService.startConnection(this.token);
+    this.chatService.joinConversation(this.conversationId());
+
+    //subscribe to incoming messages
+    this.sub = this.chatService.message$.subscribe((msg) => {
+      if(msg?.conversationId == this.conversationId()) {
+        this.messages.update((msgs) => [...msgs, msg]);
+        console.log('New message received:', msg);
+      }
+    });
+
+  }
 }
