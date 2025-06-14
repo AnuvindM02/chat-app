@@ -13,6 +13,9 @@ import { Subscription } from 'rxjs';
 })
 export class ChatWindowComponent implements OnInit, OnDestroy {
 
+  private pageSize = 10;
+  private cursor = signal<Date | null>(null);
+  private hasMore = true;
   readonly messageText = signal('');
   readonly circleUserRound = CircleUserRound;
   userId = Number(localStorage.getItem('user_id') || '0');
@@ -27,26 +30,43 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
 
   public constructor(chatService: ChatService) {
     this.chatService = chatService;
+  }
 
-    effect(() => {
-      if (this.conversationId()) {
-        this.loadMessages(this.conversationId());
-      }
-    });
+  private resetAndLoadUsers() {
+    this.cursor.set(null);
+    this.messages.set([]);
+    this.loadMessages(this.conversationId());
   }
 
   private loadMessages(conversationId: string) {
+    if (this.isLoading() || !this.hasMore) return;
+
     this.isLoading.set(true);
-    this.chatService.getMessages(conversationId).subscribe({
+    this.chatService.getMessages(
+      conversationId,
+      this.cursor()?.toISOString() || '',
+      this.pageSize
+    ).subscribe({
       next: (msgs) => {
-        this.messages.set(msgs.reverse());
+        if (msgs.length === 0)
+          this.hasMore = false;
+        else {
+          this.messages.update((currentMessages) => [...msgs.reverse(), ...currentMessages]);
+          this.cursor.set(new Date(msgs[0].timeStamp));
+        }
         this.isLoading.set(false);
-        this.scrollToBottom();
       },
       error: () => {
         this.isLoading.set(false);
       }
     });
+  }
+
+  onScroll(event: Event) {
+    const target = event.target as HTMLElement;
+    if (target.scrollTop === 0 && this.hasMore) {
+      this.loadMessages(this.conversationId());
+    }
   }
 
   sendMessage() {
@@ -76,6 +96,9 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
     this.chatService.startConnection(this.token);
     this.chatService.joinConversation(this.conversationId());
 
+    this.resetAndLoadUsers();
+    this.scrollToBottom();
+
     //subscribe to incoming messages
     this.sub = this.chatService.message$.subscribe((msg) => {
       if (msg?.conversationId == this.conversationId()) {
@@ -89,11 +112,11 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
   @ViewChild('scrollContainer') scrollContainer?: ElementRef<HTMLDivElement>;
 
   private scrollToBottom() {
-  requestAnimationFrame(() => {
-    if (this.scrollContainer) {
-      const el = this.scrollContainer.nativeElement;
-      el.scrollTop = el.scrollHeight;
-    }
-  });
-}
+    requestAnimationFrame(() => {
+      if (this.scrollContainer) {
+        const el = this.scrollContainer.nativeElement;
+        el.scrollTop = el.scrollHeight;
+      }
+    });
+  }
 }

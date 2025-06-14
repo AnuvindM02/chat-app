@@ -7,7 +7,7 @@
             <p>{{recepientName()}}</p>
         </div>
     </div>
-    <div class="scrollable-chat-area" #scrollContainer>
+    <div class="scrollable-chat-area" (scroll)="onScroll($event)" #scrollContainer>
         @if(!isLoading()){
         @for (msg of messages(); track $index) {
         <div class="chat-message" [ngClass]="{ 'me': msg.senderId === userId, 'other': msg.senderId !== userId }">
