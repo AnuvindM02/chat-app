@@ -34,8 +34,13 @@ export class ChatService {
     return this.http.get<ContactsListDto>(`${this.baseUrl}/chat/conversations`, { params });
   }
 
-  getMessages(conversationId: string): Observable<ChatMessage[]> {
-    return this.http.get<ChatMessage[]>(`${this.baseUrl}/chat/conversations/${conversationId}/messages`);
+  getMessages(conversationId: string, cursor?: string, limit: number =5): Observable<ChatMessage[]> {
+    let params = new HttpParams();
+    params = params.set('limit', limit.toString());
+    if (cursor) {
+      params = params.set('cursor', cursor);
+    }
+    return this.http.get<ChatMessage[]>(`${this.baseUrl}/chat/conversations/${conversationId}/messages`,{ params });
   }
 
   startConnection(token: string): void {
