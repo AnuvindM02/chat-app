@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, effect, input, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, effect, ElementRef, input, OnDestroy, OnInit, signal, ViewChild, viewChild } from '@angular/core';
 import { CircleUserRound, LucideAngularModule } from 'lucide-angular';
 import { ChatService } from '../../../core/services/chat.service';
 import { ChatMessage } from '../../../models/chat/chat-message';
@@ -39,9 +39,9 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
     this.isLoading.set(true);
     this.chatService.getMessages(conversationId).subscribe({
       next: (msgs) => {
-        this.messages.set(msgs);
+        this.messages.set(msgs.reverse());
         this.isLoading.set(false);
-        console.log('Messages loaded:', msgs);
+        this.scrollToBottom();
       },
       error: () => {
         this.isLoading.set(false);
@@ -49,21 +49,22 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
     });
   }
 
-  sendMessage(){
+  sendMessage() {
     const text = this.messageText().trim();
-    if(!text) return;
+    if (!text) return;
 
     const message: ChatMessage = {
       conversationId: this.conversationId(),
       senderId: this.userId,
       text: text,
       timeStamp: new Date().toISOString(),
-      senderMailId:""
+      senderMailId: ""
     };
 
     this.chatService.sendMessage(message);
     this.messages.update((msgs) => [...msgs, message]);
     this.messageText.set('');
+    this.scrollToBottom();
   }
 
   ngOnDestroy(): void {
@@ -77,11 +78,22 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
 
     //subscribe to incoming messages
     this.sub = this.chatService.message$.subscribe((msg) => {
-      if(msg?.conversationId == this.conversationId()) {
+      if (msg?.conversationId == this.conversationId()) {
         this.messages.update((msgs) => [...msgs, msg]);
-        console.log('New message received:', msg);
+        this.scrollToBottom();
       }
     });
 
   }
+
+  @ViewChild('scrollContainer') scrollContainer?: ElementRef<HTMLDivElement>;
+
+  private scrollToBottom() {
+  requestAnimationFrame(() => {
+    if (this.scrollContainer) {
+      const el = this.scrollContainer.nativeElement;
+      el.scrollTop = el.scrollHeight;
+    }
+  });
+}
 }

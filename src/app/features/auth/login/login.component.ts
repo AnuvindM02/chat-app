@@ -41,12 +41,10 @@ export class LoginComponent {
     };
     this.authService.login(loginRequest).subscribe({
       next: (response: LoginResponse) => {
-        console.log(response);
         this.authService.setAuthStatus(response);
         this.router.navigate(['../home']);
       },
       error: (error) => {
-        console.error(error);
         alert('error: ' + error.error.message);
       }
     });
