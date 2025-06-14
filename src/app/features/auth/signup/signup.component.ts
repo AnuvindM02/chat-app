@@ -1,6 +1,11 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { RegisterRequest } from '../../../models/auth/register-request';
+import { last } from 'rxjs';
+import { AuthService } from '../../../core/services/auth.service';
+import { LoginResponse } from '../../../models/auth/login-response';
+import { RegisterResponse } from '../../../models/auth/register-response';
 
 @Component({
   selector: 'app-signup',
@@ -9,11 +14,20 @@ import { RouterLink } from '@angular/router';
   styleUrl: './signup.component.css'
 })
 export class SignupComponent {
+
+    constructor(private authService: AuthService, private router:Router) { }
+
   signupForm = new FormGroup({
     firstName: new FormControl('', {
       validators: [
         Validators.required
       ]
+    }),
+    middleName: new FormControl('', {
+      validators: []
+    }),
+    lastName: new FormControl('', {
+      validators: []
     }),
     email: new FormControl('', {
       validators: [
@@ -114,6 +128,27 @@ export class SignupComponent {
       event.preventDefault();
     }
   }
+
+  register(){
+    if (this.signupForm.invalid) return;
+    const registerRequest: RegisterRequest = {
+      firstName: this.signupForm.value.firstName!,
+      email: this.signupForm.value.email!,
+      password: this.signupForm.value.password!,
+      confirmPassword: this.signupForm.value.confirmPassword!,
+      middleName: this.signupForm.value.middleName || null,
+      lastName: this.signupForm.value.lastName || null
+    };
+    this.authService.register(registerRequest).subscribe({
+      next: (response: RegisterResponse) => {
+        this.authService.setRegisterAuthStatus(response);
+        this.router.navigate(['../home']);
+      },
+      error: (error) => {
+        alert('error: ' + error.error.message);
+      }
+  });
+}
 
 }
 

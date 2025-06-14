@@ -3,6 +3,6 @@ export interface RegisterRequest {
     password: string;
     confirmPassword: string;
     firstName: string;
-    middleName: string;
-    lastName: string;
+    middleName: string|null;
+    lastName: string|null;
 }

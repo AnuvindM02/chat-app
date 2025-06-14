@@ -8,11 +8,11 @@
             <span class="error-text" [class.visible]="firstnameIsRequired">Required</span>
         </div>
         <div class="form-control">
-            <input type="text" placeholder="Middle Name" (keydown)="blockNonLetters($event)">
+            <input type="text" placeholder="Middle Name" (keydown)="blockNonLetters($event)" formControlName="middleName">
             <span class="error-text">Required</span>
         </div>
         <div class="form-control">
-            <input type="text" placeholder="Last Name" (keydown)="blockNonLetters($event)">
+            <input type="text" placeholder="Last Name" (keydown)="blockNonLetters($event)" formControlName="lastName">
             <span class="error-text">Required</span>
         </div>
     </div>
@@ -32,6 +32,6 @@
         <span class="error-text" [class.visible]="confirmPasswordIsInvalid">{{confirmPasswordErrorMessage}}</span>
     </div>
 
-    <button type="submit">Create</button>
+    <button type="submit" (click)="register()">Create</button>
     <a routerLink="">Already have an account?</a>
 </form>
